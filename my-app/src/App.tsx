@@ -1,28 +1,37 @@
 import './App.css';
-import { useState } from 'react';
-import { Task } from './utils/interfaces';
-import { TodoList } from './TodoList';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { TodoList } from './components/TodoList';
+import { TaskManager } from './components/TaskManager';
+import { TodoForm } from './components/TodoForm';
+import { Link } from 'react-router-dom';
 
 function App() {
-  const [tasks, setTasks] = useState<Task[]>([]);
-
-  const addTask = (title: string) => {
-    const newTask: Task = {
-      id: Math.random(),
-      title,
-      completed: false,
-    };
-    setTasks([...tasks, newTask]);
-  };
-
-  const deleteTask = (id: number) => {
-    setTasks(tasks.filter((task) => task.id !== id));
-  };
+  const { tasks, addTask, deleteTask, isTaskDone, editTask } = TaskManager();
 
   return (
-    <div>
-      <TodoList tasks={tasks} addTask={addTask} deleteTask={deleteTask} />
-    </div>
+    <Router>
+      <div className="mb-4">
+        <Link to="/" className="mr-4">
+          Form
+        </Link>
+        <Link to="/tasks">Tasks</Link>
+      </div>
+      <Routes>
+        <Route path="/" element={<TodoForm addTask={addTask} />} />
+        <Route
+          path="/tasks"
+          element={
+            <TodoList
+              tasks={tasks}
+              addTask={addTask}
+              deleteTask={deleteTask}
+              isTaskDone={isTaskDone}
+              editTask={editTask}
+            />
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 
